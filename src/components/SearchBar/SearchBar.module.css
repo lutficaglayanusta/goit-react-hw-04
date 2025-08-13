@@ -1,0 +1,22 @@
+
+.header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3747AC;
+    padding: 20px 0px;
+}
+.header input{
+    padding: 15px 20px;
+    border: none;
+    margin-right: 10px;
+    border-radius: 10px;
+}
+.header button{
+    background-color: red;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
