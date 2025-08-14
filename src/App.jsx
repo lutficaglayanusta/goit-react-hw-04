@@ -78,9 +78,8 @@ function App() {
     setImageUrl(regular)
     setIsOpen(true)
   }
-  const afterOpenModal = (e) => {
-    e.preventDefault()
-    console.log(e.target)
+  const afterOpenModal = () => {
+    
   }
 
   const closeModal = () => {
