@@ -1,8 +1,8 @@
-const ImageCard = ({image,alt}) => {
+const ImageCard = ({image,alt,onModal,regular}) => {
   return (
     <div>
       
-        <img src={image} width={600} height={350} alt={alt} />
+        <img onClick={()=>onModal(regular)} src={image} width={600} height={350} alt={alt} />
       
     </div>
   );

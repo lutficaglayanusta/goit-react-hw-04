@@ -1,12 +1,15 @@
-import toast ,{ Toaster } from 'react-hot-toast';
 import SearchBar from './components/SearchBar/SearchBar';
 import ImageGallery from "./components/ImageGallery/ImageGallery"
 import ErrorMessage from "./components/ErrorMessage/ErrorMessage"
 import Loader from "./components/Loader/Loader"
-import { useState } from 'react';
-import { fetchImages } from './images-api';
+import ImageModal from "./components/ImageModal/ImageModal"
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
+import toast ,{ Toaster } from 'react-hot-toast';
+import { useState } from 'react';
+import Modal from 'react-modal';
+import { fetchImages } from './images-api';
 
+Modal.setAppElement("#root")
 
 function App() {
   const [images, setImages] = useState([]);
@@ -15,7 +18,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [searchInput, setSearchInput] = useState("")
-  
+  const [modalIsOpen, setIsOpen] = useState(false)
+  const [imageUrl,setImageUrl] = useState("")
+   
   const handleSearch = async (input) => {
     try {
       setImages([])
@@ -24,7 +29,13 @@ function App() {
       setSearchInput(input)
       setPage(1)
 
-      const images = await fetchImages(input,page)
+      const images = await fetchImages(input, page)
+      
+      if (images.length === 0) {
+        toast.error("Please enter the valid in the field.",{duration: 1000})
+        return
+      }
+
       setImages(images)
       if (images.length < 12) {
         setHasMore(false)
@@ -62,20 +73,33 @@ function App() {
   } finally {
     setLoading(false);
   }
-};
+  };
+  const openModal = (regular) => {
+    setImageUrl(regular)
+    setIsOpen(true)
+  }
+  const afterOpenModal = (e) => {
+    e.preventDefault()
+    console.log(e.target)
+  }
+
+  const closeModal = () => {
+    setIsOpen(false)
+  }
 
   return (
     <>
       <SearchBar onSubmit={handleSearch} />
       {loading && <Loader />}
       {error && <ErrorMessage />}
-      {images.length > 0 && <ImageGallery images={images} />}
+      {images.length > 0 && <ImageGallery onModal={openModal} images={images} />}
       {
-        images.length > 0 && <LoadMoreBtn  loading={loading} error={error} loadMore={loadMore} />
+        images.length > 0 && hasMore && <LoadMoreBtn  loading={loading} error={error} loadMore={loadMore} />
       }
       {
         !hasMore && toast.error("No more images",{duration:1000})
       }
+      <ImageModal imageUrl={imageUrl} isOpen={modalIsOpen} onAfterOpen={afterOpenModal} onRequestClose={closeModal}/>
       <Toaster />
     </>
   )
